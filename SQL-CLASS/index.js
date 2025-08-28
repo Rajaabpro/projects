@@ -8,7 +8,10 @@ let createConnection = mysql.createConnection({
     database: "delta_app",
 });
 
-createConnection.query("SHOW TABLES")
+createConnection.query("SHOW TABLES", (err, results) => {
+    if (err) throw err;
+    console.log(results);
+});
 
 let getRandomUser = () => {
     return {
