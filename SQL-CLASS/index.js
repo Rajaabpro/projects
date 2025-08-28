@@ -1,12 +1,14 @@
 const { faker } = require("@faker-js/faker");
 const mysql = require("mysql2/promise");
 
-let pool = mysql.createPool({
+let createConnection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "my",
-    database: "test",
+    password: "Deepchatb@1",
+    database: "delta_app",
 });
+
+createConnection.query("SHOW TABLES")
 
 let getRandomUser = () => {
     return {
