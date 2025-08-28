@@ -7,11 +7,14 @@ let createConnection = mysql.createConnection({
     password: "Deepchatb@1",
     database: "delta_app",
 });
+try{    
+    let result = await createConnection.query("SHOW TABLES");
+    console.log(result);
+    createConnection.end();
+}catch(err){
+    console.log(err);
+}
 
-createConnection.query("SHOW TABLES", (err, results) => {
-    if (err) throw err;
-    console.log(results);
-});
 
 let getRandomUser = () => {
     return {
