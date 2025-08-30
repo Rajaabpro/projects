@@ -1,88 +1,130 @@
+// index.js (ESM version)
 import { faker } from "@faker-js/faker";
-import mysql from "mysql2/promise"; // ✅ promise-based API
+import mysql from "mysql2";
 import express from "express";
 import path from "path";
+import methodOverride from "method-override";
+import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
+import { dirname } from "path";
 
-// Load environment variables
-dotenv.config();
-
-// Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 const app = express();
-
-// EJS setup
+// Middleware
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "/views"));
+app.use(express.urlencoded({ extended: true }));
 
+let port = 3000;
 // Database connection
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost", // DB server address
-  user: process.env.DB_USER || "root", // DB username
-  database: process.env.DB_NAME || "delta_app", // DB name
-  password: process.env.DB_PASS || "Deepchatb@1", // DB password
+  host: "localhost",
+  user: "root",
+  database: "delta_app",
+  password: "Deepchatb@1",
 });
-console.log("✅ Database connected!"); // ✅ Database connected!
 
-// Helper function for random user
+// inserting new data
 let getRandomUser = () => {
   return [
     faker.string.uuid(),
     faker.internet.username(),
     faker.internet.email(),
     faker.internet.password(),
-    faker.phone.number(),
-    faker.location.city(),
   ];
 };
 
-// Home route to show count and all users
-app.get("/", async (req, res) => {
-  try {
-    const [countResult] = await connection.query(
-      "SELECT COUNT(*) AS count FROM user"
-    );
-    const count = countResult[0].count;
-
-    const [usersResult] = await connection.query("SELECT * FROM user");
-
-    res.render("home.ejs", { count, users: usersResult });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("❌ Database error");
-  }
+// Home page route
+app.get("/", (req, res) => {
+  let q = "SELECT count(*) FROM user";
+  connection.query(q, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.send("some error in DB");
+    }
+    let count = result[0]["count(*)"];
+    res.render("home.ejs", { count });
+  });
 });
 
-// Show route
-app.get("/show", async (req, res) => {
-  try {
-    const [rows] = await connection.query("SELECT * FROM user");
-    res.render("show.ejs", { users: rows });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("❌ Database error");
-  }
+// Add New user
+app.get("/user/add", (req, res) => {
+  res.render("add.ejs");
+});
+// Add New user
+app.post("/user/add", (req, res) => {
+  let { username, password, email } = req.body;
+  let id = uuidv4();
+  let q = `INSERT INTO user (id,username,password,email) VALUES ('${id}','${username}','${password}','${email}' )`;
+
+  connection.query(q, (err) => {
+    if (err) {
+      console.log(err);
+      return res.send("some error occurred");
+    }
+    console.log("added new user");
+    res.redirect("/user");
+  });
 });
 
-// Add a new user
-app.get("/add", async (req, res) => {
-  try {
-    const user = getRandomUser();
-    await connection.query(
-      "INSERT INTO user (id, username, email, password, phone, address) VALUES (?)",
-      [user]
-    );
-    res.send("✅ New random user added!");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("❌ Error inserting user");
-  }
+// Show users
+app.get("/user", (req, res) => {
+  let q = "SELECT * FROM user";
+  connection.query(q, (err, users) => {
+    if (err) {
+      console.log(err);
+      return res.send("Some error in DB");
+    }
+    res.render("showUser.ejs", { users });
+  });
 });
 
-// Start server
-app.listen(3000, () => {
-  console.log("✅ Server is running on port 3000");
+// Edit user
+app.get("/user/:id/edit", (req, res) => {
+  let { id } = req.params;
+  let q = `SELECT * FROM user WHERE id ='${id}'`;
+
+  connection.query(q, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.send("Some error in DB");
+    }
+    let user = result[0];
+    res.render("edit.ejs", { user });
+  });
+});
+
+// Update user
+app.patch("/user/:id", (req, res) => {
+  let { id } = req.params;
+  let { password: formPass, username: newUsername } = req.body;
+  let q = `SELECT * FROM user WHERE id = '${id}'`;
+
+  connection.query(q, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.send("Some error in DB");
+    }
+    let user = result[0];
+
+    if (formPass != user.password) {
+      return res.send("Password is incorrect");
+    }
+
+    let q2 = `UPDATE user SET username = '${newUsername}' WHERE id ='${id}'`;
+    connection.query(q2, (err) => {
+      if (err) {
+        console.log(err);
+        return res.send("Some error in DB");
+      }
+      res.redirect("/user");
+    });
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
