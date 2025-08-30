@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
-import mysql from "mysql2";
+import mysql from "mysql2/promise"; // ✅ promise-based API
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
-// Load environment variables from .env file
+// Load environment variables
 dotenv.config();
 
 // Fix __dirname for ES modules
@@ -30,34 +30,58 @@ const connection = mysql.createConnection({
 let getRandomUser = () => {
   return [
     faker.string.uuid(),
-    faker.internet.userName(),
+    faker.internet.username(),
     faker.internet.email(),
     faker.internet.password(),
+    faker.phone.number(),
+    faker.location.city(),
   ];
 };
 
-// Home route → show count and all users
-app.get("/", (req, res) => {
-  let qCount = `SELECT COUNT(*) AS count FROM user`;
-  let qUsers = `SELECT * FROM user`;
+// Home route to show count and all users
+app.get("/", async (req, res) => {
+  try {
+    const [countResult] = await connection.query(
+      "SELECT COUNT(*) AS count FROM user"
+    );
+    const count = countResult[0].count;
 
-  connection.query(qCount, (err, countResult) => {
-    if (err) {
-      console.log(err);
-      return res.send(err);
-    }
-    let count = countResult[0].count;
+    const [usersResult] = await connection.query("SELECT * FROM user");
 
-    connection.query(qUsers, (err, usersResult) => {
-      if (err) {
-        console.log(err);
-        return res.send(err);
-      }
-      res.render("home.ejs", { count: count, users: usersResult });
-    });
-  });
+    res.render("home.ejs", { count, users: usersResult });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("❌ Database error");
+  }
 });
 
+// Show route
+app.get("/show", async (req, res) => {
+  try {
+    const [rows] = await connection.query("SELECT * FROM user");
+    res.render("show.ejs", { users: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("❌ Database error");
+  }
+});
+
+// Add a new user
+app.get("/add", async (req, res) => {
+  try {
+    const user = getRandomUser();
+    await connection.query(
+      "INSERT INTO user (id, username, email, password, phone, address) VALUES (?)",
+      [user]
+    );
+    res.send("✅ New random user added!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("❌ Error inserting user");
+  }
+});
+
+// Start server
 app.listen(3000, () => {
   console.log("✅ Server is running on port 3000");
 });
