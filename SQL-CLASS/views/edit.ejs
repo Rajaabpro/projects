@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Username</title>
+    <style>
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        input {
+            width: 100%;
+            height: 30px;
+        }
+        button {
+            width: 100%;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>You are about to edit the user: <%= user.email %></h2>
+    <form method="post" action="/user/<%= user.id %>?_method=PATCH">
+        <textarea name="username" placeholder="Enter new username"><%= user.username %></textarea>
+        <input type="password" name="password" placeholder="Enter password">
+        <button type="submit">Update</button>
+    </form>
+    
+</body>
+</html>
