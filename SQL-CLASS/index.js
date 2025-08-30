@@ -20,11 +20,12 @@ app.set("views", path.join(__dirname, "views"));
 
 // Database connection
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  database: process.env.DB_NAME || "delta_app",
-  password: process.env.DB_PASS || "Deepchatb@1", // fallback
+  host: process.env.DB_HOST || "localhost", // DB server address
+  user: process.env.DB_USER || "root", // DB username
+  database: process.env.DB_NAME || "delta_app", // DB name
+  password: process.env.DB_PASS || "Deepchatb@1", // DB password
 });
+console.log("✅ Database connected!"); // ✅ Database connected!
 
 // Helper function for random user
 let getRandomUser = () => {
