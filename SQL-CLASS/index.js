@@ -51,11 +51,11 @@ app.get("/", (req, res) => {
 });
 
 // Add New user
-app.get("/user/add", (req, res) => {
+app.get("/user/get", (req, res) => {
   res.render("add.ejs");
 });
 // Add New user
-app.post("/user/add", (req, res) => {
+app.post("/user/post", (req, res) => {
   let { username, password, email } = req.body;
   let id = uuidv4();
   let q = `INSERT INTO user (id,username,password,email) VALUES ('${id}','${username}','${password}','${email}' )`;
@@ -71,7 +71,7 @@ app.post("/user/add", (req, res) => {
 });
 
 // Show users
-app.get("/user", (req, res) => {
+app.get("/user/get", (req, res) => {
   let q = "SELECT * FROM user";
   connection.query(q, (err, users) => {
     if (err) {
@@ -83,7 +83,7 @@ app.get("/user", (req, res) => {
 });
 
 // Edit user
-app.get("/user/:id/edit", (req, res) => {
+app.get("/user/:id/get", (req, res) => {
   let { id } = req.params;
   let q = `SELECT * FROM user WHERE id ='${id}'`;
 
@@ -98,7 +98,7 @@ app.get("/user/:id/edit", (req, res) => {
 });
 
 // Update user
-app.patch("/user/:id", (req, res) => {
+app.patch("/user/:id/patch", (req, res) => {
   let { id } = req.params;
   let { password: formPass, username: newUsername } = req.body;
   let q = `SELECT * FROM user WHERE id = '${id}'`;
