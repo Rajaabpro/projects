@@ -14,8 +14,18 @@ async function main() {
 }
 
 const userSchema = new mongoose.Schema({
-  name: String,
+  username: String,
   email: String,
   password: String,
 });
+
+const User = mongoose.model('User', userSchema);
+
+const user1= new User({
+  username: 'John',
+  email: 'john@example.com',
+  password: 'password' 
+});
+
+user1.save();
 
