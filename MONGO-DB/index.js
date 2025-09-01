@@ -21,11 +21,15 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-const user1= new User({
-  username: 'John',
-  email: 'john@example.com',
+const user2= new User({
+  username: 'John2',
+  email: 'john2@example.com',
   password: 'password' 
 });
 
-user1.save();
+user1.save().then((res) => {
+  console.log(res);
+}).catch((err) => {
+  console.log(err);
+});
 
