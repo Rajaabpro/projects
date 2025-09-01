@@ -21,17 +21,47 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-const user2= new User({
-  username: 'John2',
-  email: 'john2@example.com',
-  password: 'password' 
+User.find({username: ''}).then((res) => {
+  console.log(res);
+}).catch((err) => {
+  console.log(err);
 });
 
-user2.save()
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// User.insertMany([
+//   {
+//     username: 'tom',
+//     email: 'tom@example.com',
+//     password: 'password' 
+//   },
+//   {
+//     username: 'jerry',
+//     email: 'jerry@example.com',
+//     password: 'password' 
+//   },
+  
+//   {
+//     username: 'sherry',
+//     email: 'sherry@example.com',
+//     password: 'password' 
+//   },
+  
+// ]).then((res) => {
+//   console.log(res);
+// }).catch((err) => {
+//   console.log(err);
+// });
+
+// const user2= new User({
+//   username: 'John2',
+//   email: 'john2@example.com',
+//   password: 'password' 
+// });
+
+// user2.save()
+//   .then((res) => {
+//     console.log(res);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
