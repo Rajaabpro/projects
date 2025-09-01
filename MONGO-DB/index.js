@@ -27,9 +27,11 @@ const user2= new User({
   password: 'password' 
 });
 
-user1.save().then((res) => {
-  console.log(res);
-}).catch((err) => {
-  console.log(err);
-});
+user2.save()
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
