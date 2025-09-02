@@ -27,14 +27,18 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    discount: {
+        type: Number,
+        default: 50,
+    },
 });
 
 const Book = mongoose.model('Book', bookSchema);
 
 let book1 = new Book({
-    title: 'How to win friends and influence people',
-    author: 'Dale Carnegie',
-    price: 250,
+    title: 'Atomic Habits',
+    author: 'James Clear',
+    price: 550,
 });
 
 book1.save().then((res) => {
