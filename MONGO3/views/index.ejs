@@ -4,9 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Whatsapp</title>
+    <style> 
+        p {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Mini Whatsapp</h1>
-    <a href="/chats">Chats</a>
+    <h1>All Chats</h1>
+    <% for(chat of chats) { %>
+        <p><%= chat.from %> : <%= chat.msg %></p>
+    <% } %>
 </body>
 </html>
