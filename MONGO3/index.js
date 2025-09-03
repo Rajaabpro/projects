@@ -8,7 +8,7 @@ const Chat = require('./models/chat');
 // EJS setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-
+app.use(express.static(path.join(__dirname, "public")));
 // Database connection
 main()
 .then(() => console.log('Connected to MongoDB 🎉 '))
