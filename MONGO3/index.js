@@ -25,6 +25,11 @@ app.get('/chats', async (req, res) => {
   res.render('index.ejs', { chats });
 });
 
+//New Chat Route
+app.get('/chats/new', (req, res) => {
+  res.render('new.ejs');
+});
+
 //Home Route
 app.get('/', (req, res) => {
   res.send('<style>body { background-color:rgb(16, 15, 15); color:white; }</style> Rot is running');
