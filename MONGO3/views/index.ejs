@@ -9,8 +9,9 @@
 <body>
     <h1>All Chats</h1>
     <form method="get" action="/chats/new">
-        <button type="button" class="btn btn-primary">New Chat</button>
+        <button type="submit" class="btn btn-primary">New Chat</button>
     </form>
+    <hr>
     <% for(let chat of chats) { %>
         <div class="chat">
         <p>From : <%= chat.from %></p>
