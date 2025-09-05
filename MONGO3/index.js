@@ -9,6 +9,7 @@ const Chat = require('./models/chat');
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 // Database connection
 main()
 .then(() => console.log('Connected to MongoDB 🎉 '))
@@ -35,15 +36,15 @@ app.get('/', (req, res) => {
   res.send('<style>body { background-color:rgb(16, 15, 15); color:white; }</style> Rot is running');
 }); 
 
-let chat1 = new Chat({
-  from: 'John1',
-  to: 'Jane',
-  msg: 'Hello how are you?',
-  created_at: new Date(),
+//Create Chat Route
+app.post('/chats', async (req, res) => {
+  let { from, to, msg } = req.body;
+  let chat = new Chat({ from, to, msg, created_at: new Date() });
+  await chat.save();
+  res.redirect('/chats');
 });
 
-
-
+//Listen to port
 app.listen(port, () => {
   console.log(`Server is running on port ${port} 🎉 `);
 });
