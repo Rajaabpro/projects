@@ -4,12 +4,14 @@ const port = 3000;
 const mongoose = require('mongoose');
 const path = require('path');
 const Chat = require('./models/chat');
+const methodOverride = require('method-override');
 
 // EJS setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 // Database connection
 main()
 .then(() => console.log('Connected to MongoDB 🎉 '))
@@ -38,9 +40,29 @@ app.get('/', (req, res) => {
 
 //Create Chat Route
 app.post('/chats', async (req, res) => {
+  try {
   let { from, to, msg } = req.body;
   let chat = new Chat({ from, to, msg, created_at: new Date() });
   await chat.save();
+  res.redirect('/chats');
+  } catch (error) {
+    console.log(error);
+    res.render('err.ejs', { error: error.message });
+  }
+});
+
+//Edit Chat Route
+app.get('/chats/:id/edit', async (req, res) => {
+  let { id } = req.params;
+  let chat = await Chat.findById(id);
+  res.render('edit.ejs', { chat });
+});
+
+//Update Chat Route
+app.patch('/chats/:id', async (req, res) => {
+  let { id } = req.params;
+  let { msg } = req.body;
+  let chat = await Chat.findByIdAndUpdate(id, { msg }, { new: true });
   res.redirect('/chats');
 });
 
