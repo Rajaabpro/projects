@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof status !== 'undefined' ? status : '404' %> • Not Found</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="error-page">
+    <div class="error__container">
+        <main class="error__card-simple">
+            <svg class="error__icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="46" stroke="currentColor" stroke-width="8" fill="none"/>
+                <circle cx="45" cy="50" r="6" fill="currentColor"/>
+                <circle cx="75" cy="50" r="6" fill="currentColor"/>
+                <path d="M40 80 C 60 60, 80 60, 100 80" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round"/>
+            </svg>
+            <div class="error__code--simple">404</div>
+            <h1 class="error__headline--simple">Page not found</h1>
+            <p class="error__text--simple"><%= typeof message !== 'undefined' ? message : 'The page you are looking for doesn’t exist or another error occurred.' %></p>
+            <p class="error__links">Go back, or head over to <a href="/chats/new">Back</a> or <a href="/chats">Chats</a>.</p>
+        </main>
+    </div>
+</body>
+</html>
+
