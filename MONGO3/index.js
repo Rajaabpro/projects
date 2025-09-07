@@ -60,11 +60,24 @@ app.get('/chats/:id/edit', async (req, res) => {
 
 //Update Chat Route
 app.patch('/chats/:id', async (req, res) => {
+  try {
   let { id } = req.params;
   let { msg } = req.body;
   let chat = await Chat.findByIdAndUpdate(id, { msg }, { new: true });
   res.redirect('/chats');
+  } catch (error) {
+    console.log(error);
+    res.render('err.ejs', { error: error.message });
+  }
 });
+
+//Delete Chat Route
+app.delete('/chats/:id', async (req, res) => {
+  let { id } = req.params;
+  await Chat.findByIdAndDelete(id);
+  res.redirect('/chats');
+})
+
 
 //Listen to port
 app.listen(port, () => {
